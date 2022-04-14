@@ -1,12 +1,25 @@
 defmodule EcommerceWeb.ProductLive.Index do
   use EcommerceWeb, :live_view
 
+  import Logger
+
   alias Ecommerce.Products
   alias Ecommerce.Products.Product
 
+  alias Phoenix.LiveView.JS
+
+  
+
+
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :products, list_products())}
+    assigns = 
+      [
+        {:products, list_products()},
+        {:filter, :nil}
+      ]
+      
+    {:ok, assign(socket, assigns)}
   end
 
   @impl true
@@ -43,4 +56,16 @@ defmodule EcommerceWeb.ProductLive.Index do
   defp list_products do
     Products.list_products()
   end
+
+  def handle_event("filter", %{"filter" => filter}, socket) do
+    Logger.info("Filter changed to #{filter}")
+    {:noreply, assign(socket, :filter, String.to_atom(filter))}
+  end
+
+  def select_option() do
+    JS.remove_class("selected", to: ".nav-option")
+    |> JS.add_class("selected")
+    |> JS.push("filter")
+  end
+
 end

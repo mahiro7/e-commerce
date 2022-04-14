@@ -22,15 +22,15 @@
 <div class="mt-5 bg-white w-auto rounded shadow-md">
   <ul class="flex ml-3">
     <li>
-      <a class="nav-option selected" href="#">Todos</a>
+      <a class="nav-option selected" phx-click={select_option()} phx-value-filter="nil" id="nav-option" href="#">Todos</a>
       <hr />
     </li>
     <li>
-      <a class="nav-option" href="#">Ativo</a>
+      <a class="nav-option" phx-click={select_option()} phx-value-filter="true" href="#">Ativo</a>
       <hr />
     </li>
     <li>
-      <a class="nav-option" href="#">Rascunho</a>
+      <a class="nav-option" phx-click={select_option()} phx-value-filter="false" href="#">Rascunho</a>
       <hr />
     </li>
   </ul>
@@ -64,28 +64,30 @@
       </thead>
       <tbody id="products">
         <%= for product <- @products do %>
-          <tr id={"product-#{product.id}"} class="border-b">
-            <td class="w-4 p-4">
-              <div class="flex items-center">
-                <input id={"checked-item-#{product.id}"} type="checkbox" class="checkbox"/>
-              </div>
-            </td>
-            <td></td>
-            <td scope="row" class="px-6 py-4 whitespace-nowrap"><%= product.title %></td>
-            <td class="px-6 py-4">
-              <%= if (product.status == "1") do %>
-                <span class="bg-green-200 rounded-xl px-2">Ativo</span>
-              <%= else %>
-                <span class="bg-yellow-300 rounded-xl px-2">Rascunho</span>
-              <%= end %>
-            </td>
-            <td class="px-6 py-4">Categoria</td>
-            <td class="">
-              <button class="btn-edit">
-                <%= live_patch "Editar", to: Routes.product_index_path(@socket, :edit, product) %>
-              </button>
-            </td>
-          </tr>
+          <%= if @filter == product.status || @filter == :nil do %>
+            <tr id={"product-#{product.id}"} class="border-b">
+              <td class="w-4 p-4">
+                <div class="flex items-center">
+                  <input id={"checked-item-#{product.id}"} type="checkbox" class="checkbox"/>
+                </div>
+              </td>
+              <td></td>
+              <td scope="row" class="px-6 py-4 whitespace-nowrap"><%= product.title %></td>
+              <td class="px-6 py-4">
+                <%= if (product.status == true) do %>
+                  <span class="bg-green-200 rounded-xl px-2">Ativo</span>
+                <%= else %>
+                  <span class="bg-yellow-300 rounded-xl px-2">Rascunho</span>
+                <%= end %>
+              </td>
+              <td class="px-6 py-4">Categoria</td>
+              <td class="">
+                <button class="btn-edit">
+                  <%= live_patch "Editar", to: Routes.product_index_path(@socket, :edit, product) %>
+                </button>
+              </td>
+            </tr>
+          <%= end %>
         <%= end %>
       </tbody>
     </table>
