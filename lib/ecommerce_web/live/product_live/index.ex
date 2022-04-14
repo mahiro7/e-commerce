@@ -16,7 +16,8 @@ defmodule EcommerceWeb.ProductLive.Index do
     assigns = 
       [
         {:products, list_products()},
-        {:filter, :nil}
+        {:filter, :nil},
+        {:search, ""}
       ]
       
     {:ok, assign(socket, assigns)}
@@ -60,6 +61,11 @@ defmodule EcommerceWeb.ProductLive.Index do
   def handle_event("filter", %{"filter" => filter}, socket) do
     Logger.info("Filter changed to #{filter}")
     {:noreply, assign(socket, :filter, String.to_atom(filter))}
+  end
+
+  def handle_event("search", %{"search" => search}, socket) do
+    Logger.info("searching: #{search}")
+    {:noreply, assign(socket, :search, search)}
   end
 
   def select_option() do
