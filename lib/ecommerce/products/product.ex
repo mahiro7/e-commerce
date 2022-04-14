@@ -6,7 +6,7 @@ defmodule Ecommerce.Products.Product do
     field :description, :string
     field :price, :float
     field :promo_price, :float
-    field :status, :binary
+    field :status, :boolean
     field :title, :string
 
     timestamps()
