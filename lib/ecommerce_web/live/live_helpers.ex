@@ -35,6 +35,7 @@ defmodule EcommerceWeb.LiveHelpers do
         phx-window-keydown={JS.dispatch("click", to: "#close")}
         phx-key="escape"
       >
+        <!--
         <%= if @return_to do %>
           <%= live_patch "✖",
             to: @return_to,
@@ -45,7 +46,7 @@ defmodule EcommerceWeb.LiveHelpers do
         <% else %>
          <a id="close" href="#" class="phx-modal-close" phx-click={hide_modal()}>✖</a>
         <% end %>
-
+    -->
         <%= render_slot(@inner_block) %>
       </div>
     </div>

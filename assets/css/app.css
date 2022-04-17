@@ -104,6 +104,7 @@ hr.solid{
 }
 
 .phx-modal {
+  min-width: min-content;
   opacity: 1!important;
   position: fixed;
   z-index: 1;
@@ -116,10 +117,12 @@ hr.solid{
 }
 
 .phx-modal-content {
-  background-color: #fefefe;
+  background-color: #e5e7eb;
+  min-width: min-content;
   margin: 15vh auto;
-  padding: 20px;
+  padding: 0;
   border: 1px solid #888;
+  border-radius: 0.25rem;
   width: 80%;
 }
 
