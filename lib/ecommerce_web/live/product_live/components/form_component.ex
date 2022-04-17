@@ -2,9 +2,13 @@ defmodule EcommerceWeb.ProductLive.FormComponent do
   use EcommerceWeb, :live_component
 
   alias Ecommerce.Products
+  alias Phoenix.LiveView.JS
+
+  import Logger
 
   @impl true
   def update(%{product: product} = assigns, socket) do
+    Logger.info(assigns)
     changeset = Products.change_product(product)
 
     {:ok,
@@ -15,13 +19,47 @@ defmodule EcommerceWeb.ProductLive.FormComponent do
 
   @impl true
   def handle_event("validate", %{"product" => product_params}, socket) do
+    description = case Map.fetch(socket.assigns, :text_content) do
+      {:ok, x} ->
+        x
+      :error ->
+        %{}
+    end
+
+
+    new_product_params = Map.merge(product_params, description)
+
     changeset =
       socket.assigns.product
-      |> Products.change_product(product_params)
+      |> Products.change_product(new_product_params)
       |> Map.put(:action, :validate)
 
-    {:noreply, assign(socket, :changeset, changeset)}
+
+    IO.inspect changeset
+
+    assigns = [
+      {:changeset, changeset}
+    ]
+
+    {:noreply, assign(socket, assigns)}
   end
+
+  def handle_event("text-editor", %{"text_content" => %{"ops" => content}} = params, socket) do
+    #change = %{"description" => content |> Jason.encode!}
+
+    text = case content |> Jason.encode! do
+      "[{\"insert\":\"\\n\"}]" ->
+        ""
+      x ->
+        x
+    end
+
+
+    {:noreply, push_event(socket, "set-input-value", %{value: text}) }
+                #|> assign(:text_content, change)}
+  end
+
+  
 
   def handle_event("save", %{"product" => product_params}, socket) do
     save_product(socket, socket.assigns.action, product_params)
@@ -52,4 +90,5 @@ defmodule EcommerceWeb.ProductLive.FormComponent do
         {:noreply, assign(socket, changeset: changeset)}
     end
   end
+
 end
