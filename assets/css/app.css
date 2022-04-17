@@ -33,6 +33,10 @@
     .checkbox:focus{
         @apply outline-none;
     }
+
+    .input{
+        @apply w-full rounded border-zinc-400 h-8;
+    }
 }
 /* This file is for your main application CSS */
 
