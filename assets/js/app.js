@@ -19,6 +19,7 @@
 //     import "some-package"
 //
 
+import {  TextEditor  } from './hooks/textEditHook'
 // Include phoenix_html to handle method=PUT/DELETE in forms and buttons.
 import "phoenix_html"
 // Establish Phoenix Socket and LiveView configuration.
@@ -26,13 +27,27 @@ import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
 
+let Hooks = {}
+
+Hooks.TextEditor = TextEditor
+
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
-let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToken}})
+let liveSocket = new LiveSocket("/live", Socket, {hooks: Hooks, params: {_csrf_token: csrfToken}})
 
 // Show progress bar on live navigation and form submits
 topbar.config({barColors: {0: "#29d"}, shadowColor: "rgba(0, 0, 0, .3)"})
 window.addEventListener("phx:page-loading-start", info => topbar.show())
 window.addEventListener("phx:page-loading-stop", info => topbar.hide())
+
+description = document.getElementById("product-form_description")
+window.addEventListener("js:set", e => {
+        e.target.value = e.detail
+    });
+
+window.addEventListener(
+    "phx:set-input-value",
+    e => document.getElementById("product-form_description").setAttribute("value", e.detail.value)
+)
 
 // connect if there are any LiveViews on the page
 liveSocket.connect()
