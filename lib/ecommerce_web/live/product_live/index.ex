@@ -73,10 +73,19 @@ defmodule EcommerceWeb.ProductLive.Index do
     {:noreply, assign(socket, :search, search)}
   end
 
-  def select_option() do
-    JS.remove_class("selected", to: ".nav-option")
-    |> JS.add_class("selected")
-    |> JS.push("filter")
+  def handle_event("check_all", params, socket) do
+    Logger.info(params)
+    {:noreply, socket}
+  end
+
+  def handle_event("checked_item", params, socket) do
+    Logger.info(params)
+    {:noreply, socket}
+  end
+
+  def handle_event("redirect_to_index", _, socket) do
+    Logger.info "Finalmente!!!"
+    {:noreply, push_redirect(socket, to: "/products")}
   end
 
 end

@@ -12,6 +12,7 @@
 <% end %>
 
 <div class="flex flex-row justify-between items-center">
+
   <h1 class="font-bold text-xl text-gray-700">Produtos</h1>
   <button class="btn btn-green">
     <%= live_patch "Adicionar produto", to: Routes.product_index_path(@socket, :new) %>
@@ -49,8 +50,10 @@
         <tr>
           <th scope="col" class="p-4">
             <div>
-              <input id="check-all" type="checkbox" class="checkbox" />
-              <label for="check-all" class="sr-only">Checkbox</label>
+              <form phx-change="check_all">
+                <input id="check-all" name="check-all" type="checkbox" class="checkbox" />
+                <label for="check-all" class="sr-only">Checkbox</label>
+              </form>
             </div>
           </th>
           <th scope="col" class="px-6 py-3">
@@ -65,12 +68,13 @@
         </tr>
       </thead>
       <tbody id="products">
+        <form phx-change="checked_item">
         <%= for product <- @products do %>
           <%= if ((@filter == product.status || @filter == :nil) && String.contains?(String.downcase(product.title), String.downcase(@search)) ) do %>
             <tr id={"product-#{product.id}"} class="border-b">
               <td class="w-4 p-4">
                 <div class="flex items-center">
-                  <input id={"checked-item-#{product.id}"} type="checkbox" class="checkbox"/>
+                  <input id={"checked-item-#{product.id}"} name={"#{product.id}"} type="checkbox" class="checkbox"/>
                 </div>
               </td>
               <td></td>
@@ -91,6 +95,8 @@
             </tr>
           <%= end %>
         <%= end %>
+
+        </form>
       </tbody>
     </table>
 
@@ -117,7 +123,6 @@
     <%= for product <- @products do %>
       <tr id={"product-#{product.id}"}>
         <td><%= product.title %></td>
-        <td><%= product.description %></td>
         <td><%= product.status %></td>
         <td><%= product.price %></td>
         <td><%= product.promo_price %></td>
