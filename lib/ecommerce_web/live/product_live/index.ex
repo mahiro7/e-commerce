@@ -36,7 +36,7 @@ defmodule EcommerceWeb.ProductLive.Index do
 
   defp apply_action(socket, :new, _params) do
     socket
-    |> assign(:page_title, "New Product")
+    |> assign(:page_title, "Adicionar produto")
     |> assign(:product, %Product{})
   end
 
@@ -58,6 +58,11 @@ defmodule EcommerceWeb.ProductLive.Index do
     Products.list_products()
   end
 
+  def select_option() do
+    JS.remove_class("selected", to: ".nav-option")
+    |> JS.add_class("selected")
+    |> JS.push("filter")
+  end
   def handle_event("filter", %{"filter" => filter}, socket) do
     Logger.info("Filter changed to #{filter}")
     {:noreply, assign(socket, :filter, String.to_atom(filter))}
