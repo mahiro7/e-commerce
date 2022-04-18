@@ -17,5 +17,7 @@ defmodule Ecommerce.Products.Product do
     product
     |> cast(attrs, [:title, :description, :status, :price, :promo_price])
     |> validate_required([:title, :description, :status, :price, :promo_price])
+    |> validate_number(:price, greater_than_or_equal_to: 0)
+    |> validate_number(:promo_price, greater_than_or_equal_to: 0)
   end
 end
