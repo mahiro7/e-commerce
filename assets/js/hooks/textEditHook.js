@@ -4,13 +4,15 @@ export let TextEditor = {
     mounted() {
         console.log('Mounting');
 
+        this.el.phxHookId = 1;
+
         let quill = new Quill(this.el, {
             theme: 'snow'
         });
 
         description = document.getElementById("editor").getAttribute("value");
 
-        quill.setContents(description);
+        quill.setContents(JSON.parse(description));
 
         quill.on('text-change', (delta, oldDelta, source) => {
             if (source == 'api') {
