@@ -37,6 +37,10 @@
     .input{
         @apply w-full rounded border-zinc-400 h-8;
     }
+
+    .error{
+        @apply mt-3
+    }
 }
 /* This file is for your main application CSS */
 
