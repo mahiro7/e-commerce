@@ -44,16 +44,16 @@ defmodule EcommerceWeb.LiveHelpers do
             phx_click: hide_modal()
           %>
         <% else %>
-         <a id="close" href="#" class="phx-modal-close" phx-click={hide_modal()}>✖</a>
-        <% end %>
-    -->
+      -->
+         <!--<a id="close" href="#" class="phx-modal-close" phx-click={hide_modal()}>✖</a>
+    <% end %> -->
         <%= render_slot(@inner_block) %>
       </div>
     </div>
     """
   end
 
-  defp hide_modal(js \\ %JS{}) do
+  def hide_modal(js \\ %JS{}) do
     js
     |> JS.hide(to: "#modal", transition: "fade-out")
     |> JS.hide(to: "#modal-content", transition: "fade-out-scale")

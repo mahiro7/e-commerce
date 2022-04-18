@@ -45,18 +45,14 @@ defmodule EcommerceWeb.ProductLive.FormComponent do
   end
 
   def handle_event("text-editor", %{"text_content" => %{"ops" => content}} = params, socket) do
-    #change = %{"description" => content |> Jason.encode!}
-
+    IO.inspect "Entrou aqui #{content |> Jason.encode!}"
     text = case content |> Jason.encode! do
       "[{\"insert\":\"\\n\"}]" ->
         ""
       x ->
         x
     end
-
-
     {:noreply, push_event(socket, "set-input-value", %{value: text}) }
-                #|> assign(:text_content, change)}
   end
 
   
@@ -89,6 +85,11 @@ defmodule EcommerceWeb.ProductLive.FormComponent do
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset: changeset)}
     end
+  end
+
+  defp close_modal(js \\ %JS{}) do
+    #js
+    #|> EcommerceWeb.LiveHelpers.hide_modal()
   end
 
 end
