@@ -39,7 +39,9 @@
               <!--<input type="text" value="" class="w-full" />
               -->
               <%= text_input f, :title, [class: "input mt-1"] %>
-              <%= error_tag f, :title %>
+              <div class="error">
+                <%= error_tag f, :title %>
+              </div>
             </div>
 
             <div class="mt-3 mb-1">
@@ -50,7 +52,9 @@
               <div id="editor" phx-hook="TextEditor" phx-target={@myself} value={f.data.description}> 
               </div>
             </div>
-            <%= error_tag f, :description %>
+            <div class="error">
+              <%= error_tag f, :description %>
+            </div>
 
           </div>
       
@@ -67,13 +71,17 @@
                   <%= label f, :price, "Preço" %>
                   <span class="text-zinc-500 absolute pointer-events-none transform translate-y-7 translate-x-2.5">R$</span>
                   <%= number_input f, :price, [step: "0.01", class: "input pl-8 w-full", placeholder: "0,00"] %>
+                <div class="error">
                   <%= error_tag f, :price %>
+                </div>
               </div>
               <div class="flex flex-col">
                   <%= label f, :promo_price, "Comparação de preços" %>
                   <span class="text-zinc-500 absolute pointer-events-none transform translate-y-7 translate-x-2.5">R$</span>
                   <%= number_input f, :promo_price, [step: "0.01", class: "input pl-8 w-full", placeholder: "0,00"] %>
+                <div class="error">
                   <%= error_tag f, :promo_price %>
+                </div>
               </div>
             </div>
       
