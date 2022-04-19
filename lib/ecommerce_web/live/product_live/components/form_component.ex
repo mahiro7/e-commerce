@@ -87,9 +87,4 @@ defmodule EcommerceWeb.ProductLive.FormComponent do
     end
   end
 
-  defp close_modal(js \\ %JS{}) do
-    #js
-    #|> EcommerceWeb.LiveHelpers.hide_modal()
-  end
-
 end

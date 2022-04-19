@@ -48,33 +48,46 @@
     <table class="mt-2 w-full text-gray-700 text-left">
       <thead class="text-left bg-gray-50">
         <tr>
-          <th scope="col" class="p-4">
-            <div>
-              <form phx-change="check_all">
-                <input id="check-all" name="check-all" type="checkbox" class="checkbox" />
-                <label for="check-all" class="sr-only">Checkbox</label>
-              </form>
-            </div>
-          </th>
-          <th scope="col" class="px-6 py-3">
-            <span class="sr-only">Imagem</span>
-          </th>
-          <th scope="col" class="px-6 py-3">Produto</th>
-          <th scope="col" class="px-6 py-3">Status</th>
-          <th scope="col" class="px-6 py-3">Tipo</th>
-          <th scope="col" class="">
-            <span class="sr-only">Editar</span>
-          </th>
+          <form phx-change="check_all">
+              <div>
+                <%= if (@checked_items != []) do %>
+                  <th class="p-4 w-1/6">
+                    <div class="flex flex-row">
+                      <div class="rounded-l border-2 border-zync-400 p-1 whitespace-nowrap min-w-fit">
+                        <input id="check-all" name="check-all" type="checkbox" class="checkbox" />
+                        <label for="check-all" class="text-sm font-normal"><%= Enum.count(@checked_items) %> selecionado(s)</label>
+                      </div>
+                      <a href="#" class="w-1/6 min-h-max bg-red-600 hover:bg-red-700 rounded-r">
+                      </a>
+                    </div>
+                  </th>
+                <%= else %>
+                  <th scope="col" class="p-4">
+                    <input id="check-all" name="check-all" type="checkbox" class="checkbox" />
+                    <label for="check-all" class="sr-only">Checkbox</label>
+                  </th>
+                <%= end %>
+                  <th scope="col" class="px-6 py-3">
+                    <span class="sr-only">Imagem</span>
+                  </th>
+                  <th scope="col" class="px-6 py-3">Produto</th>
+                  <th scope="col" class="px-6 py-3">Status</th>
+                  <th scope="col" class="px-6 py-3">Tipo</th>
+                  <th scope="col" class="">
+                    <span class="sr-only">Editar</span>
+                  </th>
+              </div>
+          </form>
         </tr>
       </thead>
       <tbody id="products">
-        <form phx-change="checked_item">
+      <!--<form phx-change="checked_item">-->
         <%= for product <- @products do %>
           <%= if ((@filter == product.status || @filter == :nil) && String.contains?(String.downcase(product.title), String.downcase(@search)) ) do %>
             <tr id={"product-#{product.id}"} class="border-b">
               <td class="w-4 p-4">
                 <div class="flex items-center">
-                  <input id={"checked-item-#{product.id}"} name={"#{product.id}"} type="checkbox" class="checkbox"/>
+                  <input id={"checked-item-#{product.id}"} type="checkbox" class="checkbox" checked={Enum.member?(@checked_items, product.id)} phx-value-id={product.id} phx-click="checked_item" /> 
                 </div>
               </td>
               <td></td>
@@ -96,7 +109,7 @@
           <%= end %>
         <%= end %>
 
-        </form>
+      <!--</form>-->
       </tbody>
     </table>
 

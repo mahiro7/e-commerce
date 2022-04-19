@@ -1,5 +1,6 @@
 defmodule EcommerceWeb.ProductLive.Index do
   use EcommerceWeb, :live_view
+  use GenServer
 
   import Logger
 
@@ -17,7 +18,8 @@ defmodule EcommerceWeb.ProductLive.Index do
       [
         {:products, list_products()},
         {:filter, :nil},
-        {:search, ""}
+        {:search, ""},
+        {:checked_items, []},
       ]
       
     {:ok, assign(socket, assigns)}
@@ -63,9 +65,15 @@ defmodule EcommerceWeb.ProductLive.Index do
     |> JS.add_class("selected")
     |> JS.push("filter")
   end
+
   def handle_event("filter", %{"filter" => filter}, socket) do
     Logger.info("Filter changed to #{filter}")
-    {:noreply, assign(socket, :filter, String.to_atom(filter))}
+    assigns = [
+      {:filter, String.to_atom(filter)},
+      {:checked_items, []}
+    ]
+    GenServer.cast(self(), {"set_indeterminate", []})
+    {:noreply, assign(socket, assigns)}
   end
 
   def handle_event("search", %{"search" => search}, socket) do
@@ -79,13 +87,65 @@ defmodule EcommerceWeb.ProductLive.Index do
   end
 
   def handle_event("checked_item", params, socket) do
-    Logger.info(params)
-    {:noreply, socket}
+    checked_items = case params do
+      %{"id" => x, "value" => "on"} ->
+        socket.assigns.checked_items ++ [String.to_integer(x)]
+      %{"id" => x} ->
+        socket.assigns.checked_items -- [String.to_integer(x)]
+    end
+
+    IO.inspect socket.assigns.products
+
+    GenServer.cast(self(), {"set_indeterminate", checked_items})
+
+    {:noreply, assign(socket, :checked_items, checked_items)}
   end
 
+  def handle_cast({"set_indeterminate", checked_items}, socket) do
+    products = socket.assigns.products
+    value = %{value: %{
+      checked_items: checked_items,
+      all_items: Enum.count(products),
+      active_ids: get_active_ids(products),
+      sketch_ids: get_sketch_ids(products),
+      filter: socket.assigns.filter
+    }}
+
+    {:noreply, push_event(socket, "set-indeterminate", value)}
+  end
+
+  defp get_active_ids(products) do
+    products
+    |> Enum.flat_map(fn %{id: id, status: status} ->
+      case status do
+        :true ->
+          [id]
+        :false ->
+          []
+      end
+    end)
+  end
+  defp get_sketch_ids(products) do
+    products
+    |> Enum.flat_map(fn %{id: id, status: status} ->
+      case status do
+        :true ->
+          []
+        :false ->
+          [id]
+      end
+    end)
+
+  end
+
+
   def handle_event("redirect_to_index", _, socket) do
-    Logger.info "Finalmente!!!"
     {:noreply, push_redirect(socket, to: "/products")}
+  end
+
+  def handle_event("test", a, socket) do
+    IO.inspect a
+    {:noreply, socket}
   end
 
 end

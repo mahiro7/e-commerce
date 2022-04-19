@@ -101,4 +101,10 @@ defmodule Ecommerce.Products do
   def change_product(%Product{} = product, attrs \\ %{}) do
     Product.changeset(product, attrs)
   end
+
+  def delete_list_of_products(ids) do
+    query = from p in Product,
+            where: p.id in ^ids
+    Repo.delete_all(query)
+  end
 end
