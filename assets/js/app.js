@@ -54,15 +54,10 @@ window.addEventListener(
     e => {
         check = document.getElementById("check-all")
         val = e.detail.value
-        console.log(val.active_ids)
-        console.log(val.sketch_ids)
-        console.log(val.checked_items)
-        console.log(val.filter)
-
         if (
             (val.all_items == val.checked_items.length && !val.filter)
-            || (val.active_ids.every(elem => val.checked_items.includes(elem)) && val.filter == true) 
-            || (val.sketch_ids.every(elem => val.checked_items.includes(elem)) && val.filter == false)
+            || val.checked_items.length > 0 && ((val.active_ids.every(elem => val.checked_items.includes(elem)) && val.filter == true) 
+            || (val.sketch_ids.every(elem => val.checked_items.includes(elem)) && val.filter == false))
         ) {
             check.indeterminate = false;
             check.checked = true;
