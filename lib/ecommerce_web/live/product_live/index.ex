@@ -9,19 +9,16 @@ defmodule EcommerceWeb.ProductLive.Index do
 
   alias Phoenix.LiveView.JS
 
-  
-
-
   @impl true
   def mount(_params, _session, socket) do
-    assigns = 
+    assigns =
       [
         {:products, list_products()},
         {:filter, :nil},
         {:search, ""},
         {:checked_items, []},
       ]
-      
+
     {:ok, assign(socket, assigns)}
   end
 
@@ -82,8 +79,35 @@ defmodule EcommerceWeb.ProductLive.Index do
   end
 
   def handle_event("check_all", params, socket) do
-    Logger.info(params)
-    {:noreply, socket}
+    IO.inspect socket.assigns.checked_items
+    checked_items = case params do
+      %{"value" => "on"} ->
+        check_all(socket)
+      %{"_target" => ["check-all"], "check-all" => "on"} ->
+        check_all(socket)
+      %{} ->
+        []
+    end
+
+    assigns = [
+      {:checked_items, checked_items},
+      {:all_checked, (if (checked_items != []), do: true, else: false)}
+    ]
+
+    {:noreply, assign(socket, assigns)}
+  end
+
+  defp check_all(socket) do
+    products = socket.assigns.products
+
+    case socket.assigns.filter do
+      :nil ->
+        Enum.map(products, &(&1.id))
+      :true ->
+        Enum.flat_map(products, &(if &1.status == true, do: [&1.id], else: []))
+      :false ->
+        Enum.flat_map(products, &(if &1.status == false, do: [&1.id], else: []))
+    end
   end
 
   def handle_event("checked_item", params, socket) do
@@ -117,23 +141,13 @@ defmodule EcommerceWeb.ProductLive.Index do
   defp get_active_ids(products) do
     products
     |> Enum.flat_map(fn %{id: id, status: status} ->
-      case status do
-        :true ->
-          [id]
-        :false ->
-          []
-      end
+      (if status == :true, do: [id], else: [])
     end)
   end
   defp get_sketch_ids(products) do
     products
     |> Enum.flat_map(fn %{id: id, status: status} ->
-      case status do
-        :true ->
-          []
-        :false ->
-          [id]
-      end
+      (if status == :false, do: [id], else: [])
     end)
 
   end
