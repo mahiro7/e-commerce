@@ -2,7 +2,7 @@ defmodule Ecommerce.Repo.Migrations.UpdatingDescriptionFieldTypeOnTableProducts 
   use Ecto.Migration
 
   def change do
-    alterable("products") do
+    alter table("products") do
       remove :description
     end
     alter table("products") do
