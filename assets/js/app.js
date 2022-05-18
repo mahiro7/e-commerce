@@ -1,6 +1,6 @@
 // We import the CSS which is extracted to its own file by esbuild.
 // Remove this line if you add a your own CSS build pipeline (e.g postcss).
-// import "../css/app.css"
+//import "../css/app.css"
 
 // If you want to use Phoenix channels, run `mix help phx.gen.channel`
 // to get started and then uncomment the line below.
@@ -19,7 +19,12 @@
 //     import "some-package"
 //
 
+import jQuery from "jquery"
+import $ from "jquery"
 import {  TextEditor  } from './hooks/textEditHook'
+import {  SelectCategory  } from './hooks/selectCategoryHook'
+import {  SelectTags  } from './hooks/selectTagsHook'
+//import "select2/dist/css/select2.css"
 // Include phoenix_html to handle method=PUT/DELETE in forms and buttons.
 import "phoenix_html"
 // Establish Phoenix Socket and LiveView configuration.
@@ -30,6 +35,8 @@ import topbar from "../vendor/topbar"
 let Hooks = {}
 
 Hooks.TextEditor = TextEditor
+Hooks.SelectCategory = SelectCategory
+Hooks.SelectTags = SelectTags
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {hooks: Hooks, params: {_csrf_token: csrfToken}})
@@ -38,6 +45,16 @@ let liveSocket = new LiveSocket("/live", Socket, {hooks: Hooks, params: {_csrf_t
 topbar.config({barColors: {0: "#29d"}, shadowColor: "rgba(0, 0, 0, .3)"})
 window.addEventListener("phx:page-loading-start", info => topbar.show())
 window.addEventListener("phx:page-loading-stop", info => topbar.hide())
+
+window.addEventListener("create-category", () => {
+    if (isNaN(parseInt(document.getElementById("categoryField").value))) {
+        Hooks.JavaScriptHook = {
+            mounted(){
+                this.pushEvent("createCategory", {})
+            }
+        }
+    }
+})
 
 description = document.getElementById("product-form_description")
 window.addEventListener("js:set", e => {
@@ -70,6 +87,14 @@ window.addEventListener(
             check.indeterminate = false;
             check.checked = false;
         }
+    }
+)
+
+
+window.addEventListener(
+    "phx:set-indeterminate-false", () => {
+        check = document.getElementById("check-all")
+        check.indeterminate = false;
     }
 )
 

@@ -50,24 +50,24 @@
         <tr>
           <form phx-change="check_all">
               <div>
-                <%= if (@checked_items != []) do %>
+                <%= if (@checked_items == []) do %>
+                  <th scope="col" class="p-4">
+                    <input id="check-all" name="check-all" type="checkbox" class="checkbox" phx-click="check_all" />
+                    <label for="check-all" class="sr-only">Checkbox</label>
+                  </th>
+                <%= else %>
                   <th class="p-4 w-1/6">
                     <div class="flex flex-row">
                       <div class="rounded-l border-2 border-zync-400 p-1 whitespace-nowrap min-w-fit">
                         <input id="check-all" name="check-all" type="checkbox" class="checkbox" phx-click="check_all" checked={@all_checked == true} />
                         <label for="check-all" class="text-sm font-normal"><%= Enum.count(@checked_items) %> selecionado(s)</label>
                       </div>
-                      <a href="#" class="py-1 px-2 bg-red-600 hover:bg-red-700 rounded-r">
+                      <a href="#" phx-click="delete" class="py-1 px-2 bg-red-600 hover:bg-red-700 rounded-r">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
                       </a>
                     </div>
-                  </th>
-                <%= else %>
-                  <th scope="col" class="p-4">
-                    <input id="check-all" name="check-all" type="checkbox" class="checkbox" phx-click="check_all" />
-                    <label for="check-all" class="sr-only">Checkbox</label>
                   </th>
                 <%= end %>
                   <th scope="col" class="px-6 py-3">
@@ -102,7 +102,7 @@
                   <span class="bg-yellow-300 rounded-xl px-2">Rascunho</span>
                 <%= end %>
               </td>
-              <td class="px-6 py-4">Categoria</td>
+              <td class="px-6 py-4"><%= if (product.category != nil), do: product.category.name %></td>
               <td class="">
                 <button class="btn-edit">
                   <%= live_patch "Editar", to: Routes.product_index_path(@socket, :edit, product) %>
@@ -111,47 +111,8 @@
             </tr>
           <%= end %>
         <%= end %>
-
       <!--</form>-->
       </tbody>
     </table>
-
-
   </div>
-
-
 </div>
-
-<!--
-<table>
-  <thead>
-    <tr>
-      <th>Title</th>
-      <th>Description</th>
-      <th>Status</th>
-      <th>Price</th>
-      <th>Promo price</th>
-
-      <th></th>
-    </tr>
-  </thead>
-  <tbody id="products">
-    <%= for product <- @products do %>
-      <tr id={"product-#{product.id}"}>
-        <td><%= product.title %></td>
-        <td><%= product.status %></td>
-        <td><%= product.price %></td>
-        <td><%= product.promo_price %></td>
-
-        <td>
-          <span><%= live_redirect "Show", to: Routes.product_show_path(@socket, :show, product) %></span>
-          <span><%= live_patch "Edit", to: Routes.product_index_path(@socket, :edit, product) %></span>
-          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: product.id, data: [confirm: "Are you sure?"] %></span>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<span><%= live_patch "New Product", to: Routes.product_index_path(@socket, :new) %></span>
--->

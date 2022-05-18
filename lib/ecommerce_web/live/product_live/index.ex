@@ -13,10 +13,12 @@ defmodule EcommerceWeb.ProductLive.Index do
   def mount(_params, _session, socket) do
     assigns =
       [
-        {:products, list_products()},
+        {:sorting, ""},
+        {:products, list_products("")},
         {:filter, :nil},
         {:search, ""},
         {:checked_items, []},
+        {:all_checked, false}
       ]
 
     {:ok, assign(socket, assigns)}
@@ -46,15 +48,25 @@ defmodule EcommerceWeb.ProductLive.Index do
   end
 
   @impl true
-  def handle_event("delete", %{"id" => id}, socket) do
-    product = Products.get_product!(id)
-    {:ok, _} = Products.delete_product(product)
+  def handle_event("delete", _, socket) do
+    socket.assigns.checked_items
+      |> Products.delete_list_of_products()
 
-    {:noreply, assign(socket, :products, list_products())}
+    assigns = [
+      {:products, list_products(socket.assigns.sorting)},
+      {:checked_items, []}
+    ]
+
+    GenServer.cast(self(), {"set_indeterminate_false"})
+    {:noreply, assign(socket, assigns)}
   end
 
-  defp list_products do
-    Products.list_products()
+  def handle_cast({"set_indeterminate_false"}, socket) do
+    {:noreply, push_event(socket, "set-indeterminate-false", %{})}
+  end
+
+  defp list_products(sorting) do
+    Products.list_products(%{"order_by" => sorting})
   end
 
   def select_option() do
@@ -152,14 +164,7 @@ defmodule EcommerceWeb.ProductLive.Index do
 
   end
 
-
   def handle_event("redirect_to_index", _, socket) do
     {:noreply, push_redirect(socket, to: "/products")}
   end
-
-  def handle_event("test", a, socket) do
-    IO.inspect a
-    {:noreply, socket}
-  end
-
 end

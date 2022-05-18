@@ -11,7 +11,7 @@
       <h2 class="text-white">Produto não salvo</h2>
       <div class="flex flex-row">
         <a href="#" id="close" phx-click="redirect_to_index" class="text-white text-sm text-zinc-200 rounded border border-zinc-400 py-1 px-4 hover:text-zinc-300 hover:border-zinc-600">Descartar</a>
-        <div class="ml-4 btn-green rounded py-1 px-4 transition duration-300">
+        <div class="ml-4 btn-green rounded py-1 px-4 transition duration-300" phx-click={JS.dispatch("create-category")}>
           <%= submit "Salvar", phx_disable_with: "Saving..." %>
         </div>
 
@@ -97,9 +97,35 @@
                 <p class="pt-1.5 text-zinc-500 text-sm">O produto ficará oculto em todos os canais de vendas.</p>
               </div>
             </div>
-            <div class="p-5 shadow-md rounded bg-white mr-4 mb-5">
+            <div class="p-5 shadow-md rounded bg-white mr-4 mb-5 h-full" style="height: 344px; overflow: auto;">
               <h2 class="font-semibold text-lg pb-4">Organização de produtos</h2>
-              <div class="flex flex-col">
+              <div class="pb-4">
+                <div class="flex flex-row justify-between p-1">
+                  <h3 class="font-semibold">Categoria</h3>
+                  <a href="#">Gerenciar</a>
+                </div>
+                <div class="flex flex-col">
+                  <div id="select-category" class="liveview-select2 w-full h-10" phx-hook="SelectCategory" phx-update="ignore">
+                    <%= select f, :category_id, Enum.map(@categories, &{&1.name, &1.id}), [id: "categoryField", class: "input h-10"] %>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="flex flex-row justify-between p-1">
+                  <h3 class="font-semibold">Tags</h3>
+                  <a href="#">Gerenciar</a>
+                </div>
+                <div class="flex flex-col">
+                  <div id="select-tags" class="liveview-select2 h-10 w-full" phx-hook="SelectTags" phx-update="ignore">
+                    <select class="input h-10" multiple="multiple" id="product-form_tags" name="product[tags]">
+                      <%= for tag <- @all_tags do %>
+                        <option selected={if (Enum.member?(@prod_tags, tag)), do: "selected"} id={"tag-#{tag.id}"} value={"#{tag.id}"}>
+                          <%= tag.name %>
+                        </option>
+                      <%= end %>
+                    </select>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

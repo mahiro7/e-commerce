@@ -31,11 +31,11 @@ defmodule EcommerceWeb.LiveHelpers do
       <div
         id="modal-content"
         class="phx-modal-content fade-in-scale"
-        phx-click-away={JS.dispatch("click", to: "#close")}
         phx-window-keydown={JS.dispatch("click", to: "#close")}
         phx-key="escape"
       >
         <!--
+        phx-click-away={JS.dispatch("click", to: "#close")}
         <%= if @return_to do %>
           <%= live_patch "✖",
             to: @return_to,

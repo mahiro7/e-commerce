@@ -5,7 +5,7 @@ defmodule Ecommerce.Repo.Migrations.CreateProducts do
     create table(:products) do
       add :title, :string
       add :description, :text
-      add :status, :binary
+      add :status, :boolean
       add :price, :float
       add :promo_price, :float
 
